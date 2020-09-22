@@ -2,12 +2,15 @@
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 from splinter import Browser
+import time
+
 
 def init_browser():
     
     # chrome driver path for mac you will have to find yours
     executable_path = {"executable_path": "/usr/local/bin/chromedriver"}
-    browser = Browser("chrome", **executable_path, headless=False)
+    
+    return Browser("chrome", **executable_path, headless=False)
 
 def scrape():
     browser = init_browser()
@@ -24,8 +27,8 @@ def scrape():
     soup = bs(html, 'html.parser')
     
     # get the latest news title and paragraph text - assign variables
-    nasa_title = soup.body.find_all('div',class_='content_title')[1].text
-    nasa_para = soup.body.find('div',class_='article_teaser_body').text
+    nasa_title = soup.body.find_all('div', class_='content_title')[1].text
+    nasa_para = soup.body.find('div', class_='article_teaser_body').text
 
     #add data to dictionary
     mars_data["nasa_title"] = nasa_title
@@ -41,8 +44,8 @@ def scrape():
 
     # 
     html = browser.html
-    soup = bs(html, 'html.parser')
-    img_url = soup.find('img', class_='fancybox-image')['src']
+    soup = bs(html, "html.parser")
+    img_url = soup.find("img", class_="fancybox-image")["src"]
     feature_img_url = 'http://jpl.nasa.gov' + img_url
 
     # add to dictionary
@@ -59,11 +62,12 @@ def scrape():
     sp_facts_html = html_table.replace('\n', '')
 
     # add to dictionary
-    mars_data["sp_facts_html"] = mars_facts
+    mars_data["sp_facts_html"] = sp_facts_html
 
     # Visit the USGS Astrogeology site to obtain high resolution images for each of Mar's hemispheres.
     astro_url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
     browser.visit(astro_url)
+    base_url = 'https://astrogeology.usgs.gov'
     time.sleep(3)
 
     # Save both the image url string for the full resolution hemisphere image, and the Hemisphere title containing the hemisphere name.
@@ -79,7 +83,6 @@ def scrape():
     title_one = soup.body.find('h2', class_='title').text
     img_url = soup.find('img', class_='wide-image')['src']
     cereberus_img = base_url + img_url
-    time.sleep(3)
 
     # save to dictionary
     dictionary = {}
@@ -98,7 +101,7 @@ def scrape():
     # scrape and use soup to find title and image save to variables
     html = browser.html
     soup = bs(html, 'html.parser')
-    title_one = soup.body.find('h2', class_='title').text
+    title_two = soup.body.find('h2', class_='title').text
     img_url = soup.find('img', class_='wide-image')['src']
     schiaparelli_img = base_url + img_url
     time.sleep(3)
@@ -120,7 +123,7 @@ def scrape():
     # scrape and use soup to find title and image save to variables
     html = browser.html
     soup = bs(html, 'html.parser')
-    title_one = soup.body.find('h2', class_='title').text
+    title_three = soup.body.find('h2', class_='title').text
     img_url = soup.find('img', class_='wide-image')['src']
     syrtis_img = base_url + img_url
     time.sleep(3)
@@ -142,7 +145,7 @@ def scrape():
     # scrape and use soup to find title and image save to variables
     html = browser.html
     soup = bs(html, 'html.parser')
-    title_one = soup.body.find('h2', class_='title').text
+    title_four = soup.body.find('h2', class_='title').text
     img_url = soup.find('img', class_='wide-image')['src']
     valles_img = base_url + img_url
     time.sleep(3)
@@ -150,7 +153,7 @@ def scrape():
     # save to dictionary
     dictionary = {}
     dictionary["title"] = title_four
-    dictionary["img_url"] = Valles_img
+    dictionary["img_url"] = valles_img
     hemisphere_image_urls.append(dictionary)
 
     # add list of dictionaries to mars data
